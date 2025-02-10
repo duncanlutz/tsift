@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     name: Build and Release
-    runs-on: macos-latest  # Changed to macos-latest for code signing
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
@@ -34,41 +34,12 @@ jobs:
         with:
           go-version: '1.21'
 
-      - name: Install gon for code signing
-        if: matrix.goos == 'darwin'
-        run: |
-          brew tap mitchellh/gon
-          brew install mitchellh/gon/gon
-
-      - name: Import Code-Signing Certificates
-        if: matrix.goos == 'darwin'
-        env:
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE_BASE64 }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          KEYCHAIN_PASSWORD: ${{ github.run_id }}
-        run: |
-          echo $APPLE_CERTIFICATE | base64 --decode > certificate.p12
-          security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          security default-keychain -s build.keychain
-          security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
-          security import certificate.p12 -k build.keychain -P "$APPLE_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
-          security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
-
       - name: Build binary
         env:
           GOOS: ${{ matrix.goos }}
           GOARCH: ${{ matrix.goarch }}
         run: |
           go build -o tsift-${{ matrix.os }}-${{ matrix.arch }}
-
-      - name: Sign macOS binary
-        if: matrix.goos == 'darwin'
-        env:
-          APPLE_DEVELOPER_ID: ${{ secrets.APPLE_DEVELOPER_ID }}
-        run: |
-          codesign --force -s "$APPLE_DEVELOPER_ID" --options runtime tsift-${{ matrix.os }}-${{ matrix.arch }}
-          # Verify signature
-          codesign -v tsift-${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Upload binary as artifact
         uses: actions/upload-artifact@v4
@@ -93,3 +64,4 @@ jobs:
             tsift-darwin-amd64/tsift-darwin-amd64
             tsift-darwin-arm64/tsift-darwin-arm64
           generate_release_notes: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
