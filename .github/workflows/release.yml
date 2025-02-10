@@ -30,7 +30,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Go
-        uses: actions/setup-go@v4
+        uses: actions/setup-go@v5
         with:
           go-version: '1.21'
 
@@ -42,7 +42,7 @@ jobs:
           go build -o tsift-${{ matrix.os }}-${{ matrix.arch }}
 
       - name: Upload binary as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tsift-${{ matrix.os }}-${{ matrix.arch }}
           path: tsift-${{ matrix.os }}-${{ matrix.arch }}
@@ -53,7 +53,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download all artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
 
       - name: Create Release
         id: create_release
