@@ -17,7 +17,7 @@ A command-line tool for generating Markdown documentation from TypeScript interf
 #### macOS
 ```bash
 # Download the latest binary
-# Replace tsift-darwin-arm64 with *tsift-darwin-amd64* for Apple Silicon
+# Replace tsift-darwin-arm64 with *tsift-darwin-amd64* for Intel Macs
 curl -o ./tsift -L https://github.com/duncanlutz/tsift/releases/latest/download/tsift-darwin-arm64
 
 # Make it executable
