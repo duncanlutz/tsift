@@ -64,3 +64,4 @@ jobs:
             tsift-darwin-amd64/tsift-darwin-amd64
             tsift-darwin-arm64/tsift-darwin-arm64
           generate_release_notes: true
+          token: ${{ secrets.CUSTOM_GITHUB_TOKEN }}
