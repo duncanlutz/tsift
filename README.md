@@ -17,14 +17,15 @@ A command-line tool for generating Markdown documentation from TypeScript interf
 #### macOS
 ```bash
 # Download the latest binary
-curl -LO https://github.com/duncanlutz/tsift/releases/latest/download/tsift-darwin-amd64
+# Replace tsift-darwin-arm64 with *tsift-darwin-amd64* for Apple Silicon
+curl -o ./tsift -L https://github.com/duncanlutz/tsift/releases/latest/download/tsift-darwin-arm64
 
 # Make it executable
-chmod +x tsift-darwin-amd64
+chmod +x tsift
 
 # Move to a directory in your PATH (recommended location)
 sudo mkdir -p /usr/local/bin
-sudo mv tsift-darwin-amd64 /usr/local/bin/tsift
+sudo mv tsift /usr/local/bin/tsift
 
 # Add to your shell configuration (~/.zshrc or ~/.bashrc)
 echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.zshrc  # for zsh
@@ -35,6 +36,9 @@ echo 'export PATH="/usr/local/bin:$PATH"' >> ~/.bashrc  # for bash
 source ~/.zshrc  # for zsh
 # OR
 source ~/.bashrc  # for bash
+
+# If you experience a security warning, run the following command
+xattr -d com.apple.quarantine /usr/local/bin/tsift
 ```
 
 #### Linux
@@ -83,25 +87,13 @@ tsift can be run in two modes:
 ### Process specific files
 
 ```bash
-tsift -f file1.ts,file2.ts,file3.ts
-```
-
-or
-
-```bash
-tsift --files file1.ts,file2.ts,file3.ts
+tsift [-f|--files] file1.ts,file2.ts,file3.ts
 ```
 
 ### Process an entire directory
 
 ```bash
-tsift -d ./src
-```
-
-or
-
-```bash
-tsift --directory ./src
+tsift [-d|--directory] ./src
 ```
 
 ### Specify output file
@@ -109,13 +101,7 @@ tsift --directory ./src
 By default, tsift outputs to stdout. You can specify an output file using:
 
 ```bash
-tsift -o output.md -f file1.ts
-```
-
-or
-
-```bash
-tsift --output output.md --directory ./src
+tsift [-o|--output] output.md -f file1.ts
 ```
 
 ## Output Format
